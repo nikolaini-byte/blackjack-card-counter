@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Windows](https://img.shields.io/badge/Windows-Supported-brightgreen)](https://www.microsoft.com/windows/)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/blackjack-card-counter/build.yml?branch=main)](https://github.com/yourusername/blackjack-card-counter/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/nikolaini-byte/blackjack-card-counter/build.yml?branch=main)](https://github.com/nikolaini-byte/blackjack-card-counter/actions)
 
 An advanced, mathematically-driven Blackjack analysis tool featuring sophisticated card counting systems, Expected Value calculations, and optimal strategy recommendations. This application provides both a desktop interface and a web-based API for blackjack strategy analysis.
 
@@ -44,12 +44,12 @@ An advanced, mathematically-driven Blackjack analysis tool featuring sophisticat
 ### Installation Options
 
 #### Option 1: Windows Installer (Recommended)
-1. Download the latest `BlackjackCardCounter_Setup.exe` from [Releases](https://github.com/yourusername/blackjack-card-counter/releases)
+1. Download the latest `BlackjackCardCounter_Setup.exe` from [Releases](https://github.com/nikolaini-byte/blackjack-card-counter/releases)
 2. Run the installer and follow the on-screen instructions
 3. Launch from Start Menu or Desktop shortcut
 
 #### Option 2: Portable Version
-1. Download `BlackjackCardCounter_Portable.zip` from [Releases](https://github.com/yourusername/blackjack-card-counter/releases)
+1. Download `BlackjackCardCounter_Portable.zip` from [Releases](https://github.com/nikolaini-byte/blackjack-card-counter/releases)
 2. Extract to a folder of your choice
 3. Run `BlackjackCardCounter.exe`
 
@@ -244,9 +244,9 @@ For support, please open an issue on the [GitHub repository](https://github.com/
 
 ## 📊 Project Status
 
-[![GitHub last commit](https://img.shields.io/github/last-commit/yourusername/blackjack-card-counter)](https://github.com/yourusername/blackjack-card-counter/commits/main)
-[![GitHub issues](https://img.shields.io/github/issues/yourusername/blackjack-card-counter)](https://github.com/yourusername/blackjack-card-counter/issues)
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/blackjack-card-counter?style=social)](https://github.com/yourusername/blackjack-card-counter/stargazers)
+[![GitHub last commit](https://img.shields.io/github/last-commit/nikolaini-byte/blackjack-card-counter)](https://github.com/nikolaini-byte/blackjack-card-counter/commits/main)
+[![GitHub issues](https://img.shields.io/github/issues/nikolaini-byte/blackjack-card-counter)](https://github.com/nikolaini-byte/blackjack-card-counter/issues)
+[![GitHub stars](https://img.shields.io/github/stars/nikolaini-byte/blackjack-card-counter?style=social)](https://github.com/nikolaini-byte/blackjack-card-counter/stargazers)
 
 ## 🛠️ Usage Guide
 
@@ -458,8 +458,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Built with ❤️ for mathematical precision and professional gaming analysis**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/blackjack-card-counter?style=social)](https://github.com/yourusername/blackjack-card-counter/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/yourusername/blackjack-card-counter)](https://github.com/yourusername/blackjack-card-counter/issues)
-=======
-# blackjack-card-counter
->>>>>>> 7c831e9fdf454e570e136ce098c6f39785a0b024
+[![GitHub stars](https://img.shields.io/github/stars/nikolaini-byte/blackjack-card-counter?style=social)](https://github.com/nikolaini-byte/blackjack-card-counter/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/nikolaini-byte/blackjack-card-counter)](https://github.com/nikolaini-byte/blackjack-card-counter/issues)

@@ -34,6 +34,13 @@ An advanced, mathematically-driven Blackjack analysis tool featuring sophisticat
 - **Web Interface** - Access from any device on your local network
 - **REST API** - Integrate with other applications
 
+## 🌐 Live Demo
+
+Try out the live demo of Blackjack Card Counter:
+[![Live Demo](https://img.shields.io/badge/🚀-Live%20Demo-blue?style=for-the-badge&logo=vercel)](https://web-production-abca.up.railway.app)
+
+> ⏳ This demo will be available for approximately 30 days (until **August 25, 2025**)
+
 ## 🚀 Quick Start
 
 ### Prerequisites

@@ -47,13 +47,22 @@ Try out the live demo of Blackjack Card Counter:
 - Windows 10/11 (64-bit)
 - Python 3.8 or higher (for development)
 - pip (Python package manager)
+- NSIS (Nullsoft Scriptable Install System) - [Download from NSIS website](https://nsis.sourceforge.io/Download) (Required for creating the Windows installer)
 
 ### Installation Options
 
 #### Option 1: Windows Installer (Recommended)
-1. Download the latest `BlackjackCardCounter_Setup.exe` from [Releases](https://github.com/nikolaini-byte/blackjack-card-counter/releases)
-2. Run the installer and follow the on-screen instructions
-3. Launch from Start Menu or Desktop shortcut
+1. **Prerequisite**: Install NSIS from [nsis.sourceforge.io](https://nsis.sourceforge.io/Download) if you haven't already
+2. Clone the repository and navigate to the project directory
+3. Run the build script to create the installer:
+   ```bash
+   .\build.bat
+   ```
+4. Find the installer at `BlackjackCardCounter_Setup.exe` in the project root
+5. Run the installer and follow the on-screen instructions
+6. Launch from Start Menu or Desktop shortcut
+
+   > 💡 **Note**: If you just want to use the application, you can download the pre-built installer from the [Releases](https://github.com/nikolaini-byte/blackjack-card-counter/releases) page.
 
 #### Option 2: Portable Version
 1. Download `BlackjackCardCounter_Portable.zip` from [Releases](https://github.com/nikolaini-byte/blackjack-card-counter/releases)

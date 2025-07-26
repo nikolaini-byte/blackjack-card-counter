@@ -4,9 +4,10 @@ Blackjack Card Counter - Konfiguration
 import os
 
 # Server-Konfiguration
-SERVER_HOST = os.getenv('SERVER_HOST', '127.0.0.1')
-API_PORT = int(os.getenv('API_PORT', '8000'))
-FRONTEND_PORT = int(os.getenv('FRONTEND_PORT', '8080'))
+# Use 0.0.0.0 to listen on all network interfaces
+SERVER_HOST = os.getenv('SERVER_HOST', '0.0.0.0')
+API_PORT = int(os.getenv('PORT', '8000'))  # Standard port for Railway/Render
+FRONTEND_PORT = API_PORT  # Use same port for frontend and backend in production
 
 # Anwendungseinstellungen
 DEFAULT_DECKS = 3

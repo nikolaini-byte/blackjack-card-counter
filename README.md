@@ -1,10 +1,11 @@
-<<<<<<< HEAD
 # Blackjack Card Counter & Decision Engine
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Windows](https://img.shields.io/badge/Windows-Supported-brightgreen)](https://www.microsoft.com/windows/)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/blackjack-card-counter/build.yml?branch=main)](https://github.com/yourusername/blackjack-card-counter/actions)
 
-An advanced, mathematically-driven Blackjack analysis tool featuring sophisticated card counting systems, Expected Value calculations, and optimal strategy recommendations.
+An advanced, mathematically-driven Blackjack analysis tool featuring sophisticated card counting systems, Expected Value calculations, and optimal strategy recommendations. This application provides both a desktop interface and a web-based API for blackjack strategy analysis.
 
 ## 🚀 Features
 
@@ -27,28 +28,55 @@ An advanced, mathematically-driven Blackjack analysis tool featuring sophisticat
 - **Probability Engine** - Advanced win/bust probability analysis
 - **Performance Tracking** - Session analysis and statistics
 
-## 🖥️ Windows Desktop Version
+### 🖥️ Cross-Platform Support
+- **Windows Installer** - Easy installation with automatic updates
+- **Portable Version** - No installation required
+- **Web Interface** - Access from any device on your local network
+- **REST API** - Integrate with other applications
 
-You can download the latest Windows executable (.exe) from the [Releases](https://github.com/yourusername/blackjack-card-counter/releases) page. This is a standalone version that doesn't require Python installation.
+## 🚀 Quick Start
 
-### Features of the Desktop Version
-- No Python installation required
-- Single executable file
-- All features from the web version
-- Offline functionality
-- Automatic updates (coming soon)
+### Prerequisites
+- Windows 10/11 (64-bit)
+- Python 3.8 or higher (for development)
+- pip (Python package manager)
 
-### Building from Source
+### Installation Options
 
-If you want to build the executable yourself:
+#### Option 1: Windows Installer (Recommended)
+1. Download the latest `BlackjackCardCounter_Setup.exe` from [Releases](https://github.com/yourusername/blackjack-card-counter/releases)
+2. Run the installer and follow the on-screen instructions
+3. Launch from Start Menu or Desktop shortcut
 
-1. Install Python 3.8+ from [python.org](https://www.python.org/downloads/)
-2. Clone this repository
-3. Run the build script:
+#### Option 2: Portable Version
+1. Download `BlackjackCardCounter_Portable.zip` from [Releases](https://github.com/yourusername/blackjack-card-counter/releases)
+2. Extract to a folder of your choice
+3. Run `BlackjackCardCounter.exe`
+
+#### Option 3: Build from Source
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/blackjack-card-counter.git
+   cd blackjack-card-counter
    ```
+2. Run the build script:
+   ```bash
    build.bat
    ```
-4. Find the executable in the `dist` folder
+3. Find the installer in the root directory or the portable version in `dist` folder
+
+### Running the Application
+
+- **Windows Installer/Portable**: Simply launch the application from Start Menu or Desktop shortcut
+- **From Source**:
+  ```bash
+  # Install dependencies
+  pip install -r requirements.txt
+  
+  # Start the application
+  python start.py
+  ```
+  Access the web interface at [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ## 🚀 Quick Start
 
@@ -98,7 +126,127 @@ python -m src.api.server
 
 Access the application at: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-## 🏗️ Architecture Overview
+## 🏗️ Project Structure
+
+```
+blackjack-card-counter/
+├── build/                    # Build output directory
+├── dist/                     # Distribution files
+├── installer/                # Installer build files
+├── scripts/                  # Utility scripts
+├── src/                      # Source code
+│   ├── api/                  # FastAPI backend
+│   │   ├── server.py         # Main application server
+│   │   └── decision_engine.py # Game logic and strategy
+│   ├── static/               # Frontend assets
+│   │   ├── css/              # Stylesheets
+│   │   └── js/               # JavaScript files
+│   └── templates/            # HTML templates
+├── blackjack.spec           # PyInstaller configuration
+├── build.bat                # Windows build script
+├── create_installer.py      # Installer creation script
+├── create_portable.py       # Portable version creation script
+├── requirements.txt         # Python dependencies
+└── start.py                # Application entry point
+```
+
+## 🛠️ Development
+
+### Prerequisites
+- Python 3.8+
+- pip
+- Git
+
+### Setting Up Development Environment
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/blackjack-card-counter.git
+   cd blackjack-card-counter
+   ```
+
+2. Create and activate a virtual environment:
+   ```bash
+   # Windows
+   python -m venv venv
+   .\venv\Scripts\activate
+   
+   # macOS/Linux
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. Install development dependencies:
+   ```bash
+   pip install -r requirements.txt
+   pip install pytest pytest-cov black flake8
+   ```
+
+### Building the Application
+
+1. Run the build script:
+   ```bash
+   .\build.bat
+   ```
+   This will:
+   - Install required packages
+   - Create a standalone executable
+   - Generate a Windows installer
+   - Create a portable version
+
+2. Find the outputs:
+   - Installer: `BlackjackCardCounter_Setup.exe`
+   - Portable: `dist/BlackjackCardCounter/`
+
+### Running Tests
+
+```bash
+pytest tests/
+```
+
+### Code Style
+
+This project uses:
+- **Black** for code formatting
+- **Flake8** for linting
+- **isort** for import sorting
+
+Run code style checks:
+```bash
+black .
+flake8
+isort .
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Support
+
+For support, please open an issue on the [GitHub repository](https://github.com/yourusername/blackjack-card-counter/issues).
+
+## 📚 Resources
+
+- [Blackjack Strategy Charts](https://www.blackjackapprenticeship.com/blackjack-strategy-charts/)
+- [Card Counting Systems](https://www.blackjackinfo.com/blackjack-card-counting-systems/)
+- [Basic Strategy Trainer](https://www.blackjackinfo.com/blackjack-trainer/)
+
+## 📊 Project Status
+
+[![GitHub last commit](https://img.shields.io/github/last-commit/yourusername/blackjack-card-counter)](https://github.com/yourusername/blackjack-card-counter/commits/main)
+[![GitHub issues](https://img.shields.io/github/issues/yourusername/blackjack-card-counter)](https://github.com/yourusername/blackjack-card-counter/issues)
+[![GitHub stars](https://img.shields.io/github/stars/yourusername/blackjack-card-counter?style=social)](https://github.com/yourusername/blackjack-card-counter/stargazers)
 
 ## 🛠️ Usage Guide
 

@@ -27,6 +27,29 @@ An advanced, mathematically-driven Blackjack analysis tool featuring sophisticat
 - **Probability Engine** - Advanced win/bust probability analysis
 - **Performance Tracking** - Session analysis and statistics
 
+## 🖥️ Windows Desktop Version
+
+You can download the latest Windows executable (.exe) from the [Releases](https://github.com/yourusername/blackjack-card-counter/releases) page. This is a standalone version that doesn't require Python installation.
+
+### Features of the Desktop Version
+- No Python installation required
+- Single executable file
+- All features from the web version
+- Offline functionality
+- Automatic updates (coming soon)
+
+### Building from Source
+
+If you want to build the executable yourself:
+
+1. Install Python 3.8+ from [python.org](https://www.python.org/downloads/)
+2. Clone this repository
+3. Run the build script:
+   ```
+   build.bat
+   ```
+4. Find the executable in the `dist` folder
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -172,8 +195,10 @@ blackjack-card-counter/
 │       └── index.html             # Main application template
 ├── config.py                      # Configuration settings
 ├── start.py                       # Unified startup script
-├── deploy.sh                      # One-click deployment
-└── requirements.txt               # Python dependencies
+├── blackjack.spec                # PyInstaller configuration
+├── build.bat                     # Windows build script
+├── deploy.sh                     # One-click deployment
+└── requirements.txt              # Python dependencies
 ```
 
 ### Key Algorithms

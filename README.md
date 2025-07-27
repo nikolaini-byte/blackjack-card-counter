@@ -208,13 +208,6 @@ A modern, distraction-free Blackjack card counting trainer designed to help you 
 - **Web Interface** - Access from any device on your local network
 - **REST API** - Integrate with other applications
 
-## 🌐 Live Demo
-
-Try out the live demo of Blackjack Card Counter:
-[![Live Demo](https://img.shields.io/badge/🚀-Live%20Demo-blue?style=for-the-badge&logo=vercel)](cardcounter.up.railway.app)
-
-> ⏳ This demo will be available for approximately 30 days (until **August 25, 2025**)
-
 ## 🚀 Quick Start
 
 ### Prerequisites

@@ -59,7 +59,7 @@ We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for 
 ## 🚀 Usage
 
 ### Is there a live demo available?
-Not yet. The project is in early development and not yet deployed.
+There is currently no live demo available as the project is in early development. The focus is currently on core development and testing.
 
 ### What are the system requirements?
 - Node.js 16+

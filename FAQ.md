@@ -16,11 +16,10 @@ The current version is **not stable** and should be considered experimental. Bre
 
 ## 🤝 Getting Help & Support
 
-### Where can I get help with using the tool?
-Since this is an early-stage project, formal support is limited. You can:
-1. Check the [documentation](#)
-2. Open a [GitHub Issue](https://github.com/nikolaini-byte/blackjack-card-counter/issues)
-3. Join our [community discussions](#) (coming soon)
+### How can I get help or ask questions?
+You can reach out to me directly via PM (nightwing09) with any questions. For technical discussions, you can also:
+- Start a [GitHub Discussion](https://github.com/nikolaini-byte/blackjack-card-counter/discussions)
+- Open an [issue](https://github.com/nikolaini-byte/blackjack-card-counter/issues) for bugs or feature requests
 
 ### How do I report a bug or issue?
 Please follow these steps:

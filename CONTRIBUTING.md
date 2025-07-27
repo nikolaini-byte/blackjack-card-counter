@@ -5,7 +5,7 @@
 We're thrilled you're here and excited to have you join our community. Whether you're a seasoned developer or just starting out, there are many ways to contribute, from writing code to improving documentation, reporting bugs, or suggesting new features.
 
 ### 💬 Get in Touch
-- **Discord**: Join our community on Discord: [nightwing09](https://discord.gg/your-invite-link)
+- **Contact**: Feel free to PM me (nightwing09) with any questions
 - **Issues**: Check out our [open issues](https://github.com/nikolaini-byte/blackjack-card-counter/issues)
 - **Discussion**: Start a [discussion](https://github.com/nikolaini-byte/blackjack-card-counter/discussions)
 
@@ -207,16 +207,16 @@ We aim to review all PRs within 3 business days. If it's been longer, feel free 
 
 ## 💖 Community & Support
 
-### Join Our Community
-- **Discord**: Chat with us and other contributors: [nightwing09](https://discord.gg/your-invite-link)
-- **Twitter**: Follow us for updates: [@BlackjackCounter](https://twitter.com/your-handle)
-- **Blog**: Read our [development blog](#) (coming soon)
+### Get in Touch
+- **PM**: You can reach out to me (nightwing09) directly via PM
+- **Issues**: Use GitHub issues for technical discussions
+- **Contributions**: All contributions are welcome and appreciated!
 
 ### Need Help?
 - Check our [FAQ](FAQ.md)
 - Search existing [issues](https://github.com/nikolaini-byte/blackjack-card-counter/issues)
 - Start a new [discussion](https://github.com/nikolaini-byte/blackjack-card-counter/discussions)
-- Reach out on Discord
+- Send me a PM (nightwing09)
 
 ## 🙏 Thank You!
 

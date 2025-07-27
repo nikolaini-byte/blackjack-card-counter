@@ -1,0 +1,46 @@
+# Prometheus configuration for Blackjack Card Counter
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Alert manager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
+
+# Rule files specifies a list of files from which rules are read
+rule_files:
+  - 'alerts.yml'
+
+# Scrape configurations
+scrape_configs:
+  # Self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Application metrics
+  - job_name: 'blackjack-app'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:5000']
+        labels:
+          env: 'production'
+          app: 'blackjack-app'
+
+  # Redis metrics
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:9121']
+        labels:
+          env: 'production'
+          service: 'redis'
+
+  # Node exporter (system metrics)
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          env: 'production'

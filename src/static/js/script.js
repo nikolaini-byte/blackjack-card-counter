@@ -1,74 +1,201 @@
+/**
+ * @typedef {Object} CardCount
+ * @property {number} count - The running count of cards
+ * @property {number} decks - The number of decks remaining
+ * @property {number} trueCount - The true count (running count / decks remaining)
+ */
+
+/**
+ * @typedef {Object} DecisionData
+ * @property {string} action - The recommended action (e.g., 'HIT', 'STAND')
+ * @property {string} confidence - Confidence level of the decision
+ * @property {number} winProbability - Probability of winning with this decision (0-1)
+ * @property {string} [explanation] - Optional explanation of the decision
+ */
+
+/**
+ * @typedef {Object} GameState
+ * @property {string[]} playerCards - Array of card values in player's hand
+ * @property {string} dealerCard - Dealer's up card
+ * @property {number} decks - Number of decks in play
+ * @property {number} trueCount - Current true count
+ * @property {string} mode - Current game mode ('basic' or 'advanced')
+ * @property {string} [error] - Current error message, if any
+ */
+
+// Immediately Invoked Function Expression (IIFE) to create a private scope
 (() => {
   // === Helper functions ===
+  
+  /**
+   * Shorthand function to get an element by ID with type safety
+   * @param {string} id - The ID of the element to retrieve
+   * @returns {HTMLElement | null} The DOM element or null if not found
+   */
   const el = id => document.getElementById(id);
   
-  // === Card validation function ===
+  /**
+   * Validates and normalizes card input strings into an array of valid card values.
+   * @param {string} input - Comma-separated string of card values (e.g., 'A,10,K')
+   * @returns {string[]} Array of valid card values (e.g., ['A', '10', 'K'])
+   * 
+   * @example
+   * // Returns ['A', '10', 'K']
+   * validateCards('A, 10, k');
+   * 
+   * // Returns [] for invalid input
+   * validateCards('X,Y,Z');
+   */
   function validateCards(input) {
-    if (!input || typeof input !== 'string') return [];
+    if (!input || typeof input !== 'string') {
+      console.warn('Invalid input for validateCards:', input);
+      return [];
+    }
     
-    // Split by comma and clean up
+    // Split by comma, trim whitespace, and convert to uppercase
     const cards = input.split(',')
       .map(card => card.trim().toUpperCase())
       .filter(card => card.length > 0);
     
-    // Validate each card
-    const validCards = [];
-    const validCardValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+    // Validate each card against allowed values
+    const validCardValues = new Set(['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']);
+    const validCards = cards.filter(card => validCardValues.has(card));
     
-    for (const card of cards) {
-      if (validCardValues.includes(card)) {
-        validCards.push(card);
-      }
+    // Log any invalid cards that were filtered out
+    const invalidCards = cards.filter(card => !validCardValues.has(card));
+    if (invalidCards.length > 0) {
+      console.warn(`Invalid card values detected and filtered: ${invalidCards.join(', ')}`);
     }
     
     return validCards;
   }
   
-  // === Card utility functions ===
+  /**
+   * Calculates the total value of a blackjack hand, accounting for aces.
+   * Aces are counted as 11 unless that would cause a bust, in which case they count as 1.
+   * 
+   * @param {string[]} cards - Array of card values (e.g., ['A', '10', 'K'])
+   * @returns {number} The total value of the hand
+   * 
+   * @example
+   * // Returns 21 (A=11, K=10)
+   * calculateHandValue(['A', 'K']);
+   * 
+   * // Returns 17 (A=1, 6=6, K=10)
+   * calculateHandValue(['A', '6', 'K']);
+   */
   function calculateHandValue(cards) {
-    if (!Array.isArray(cards) || cards.length === 0) return 0;
+    // Input validation
+    if (!Array.isArray(cards) || cards.length === 0) {
+      console.warn('No cards provided to calculateHandValue');
+      return 0;
+    }
     
     let total = 0;
     let aces = 0;
     
+    // First pass: count all cards, treating aces as 11
     for (const card of cards) {
       if (card === 'A') {
         aces++;
         total += 11;
       } else if (['J', 'Q', 'K'].includes(card)) {
-        total += 10;
-      } else {
+        total += 10; // Face cards are worth 10
+      } else if (card === '10' || (parseInt(card) >= 2 && parseInt(card) <= 9)) {
         total += parseInt(card);
+      } else {
+        console.warn(`Invalid card value in calculateHandValue: ${card}`);
       }
     }
     
-    // Adjust for aces
+    // Second pass: adjust for aces if needed
     while (total > 21 && aces > 0) {
-      total -= 10;
+      total -= 10; // Convert an ace from 11 to 1
       aces--;
     }
     
     return total;
   }
   
+  /**
+   * Converts a card value to its numerical equivalent in blackjack.
+   * Face cards (J, Q, K) are worth 10, Aces are worth 11, number cards keep their face value.
+   * 
+   * @param {string} card - The card value to convert (e.g., 'A', '10', 'K')
+   * @returns {number} The numerical value of the card
+   * 
+   * @example
+   * // Returns 10
+   * convertCardToValue('K');
+   * 
+   * // Returns 11
+   * convertCardToValue('A');
+   */
   function convertCardToValue(card) {
-    if (!card) return 0;
-    if (card === 'A') return 11;
     if (['J', 'Q', 'K'].includes(card)) return 10;
-    return parseInt(card) || 0;
+    if (card === 'A') return 11;
+    
+    const value = parseInt(card, 10);
+    if (isNaN(value) || value < 2 || value > 10) {
+      console.warn(`Invalid card value in convertCardToValue: ${card}`);
+      return 0;
+    }
+    return value;
   }
   
-  function calculateTrueCount(decks) {
-    if (decks <= 0) return 0;
-    return Math.round((gameState.runningCount / decks) * 10) / 10; // Round to 1 decimal place
+  /**
+   * Calculates the true count based on the number of decks remaining.
+   * The true count is the running count divided by the number of decks remaining.
+   * 
+   * @param {number} runningCount - The current running count
+   * @param {number} decksRemaining - The number of decks remaining in the shoe
+   * @returns {number} The calculated true count, rounded to 1 decimal place
+   * 
+   * @example
+   * // Returns 2.0 (running count 4, 2 decks remaining)
+   * calculateTrueCount(4, 2);
+   */
+  function calculateTrueCount(runningCount, decksRemaining) {
+    if (typeof runningCount !== 'number' || isNaN(runningCount)) {
+      console.warn('Invalid running count:', runningCount);
+      return 0;
+    }
+    
+    if (typeof decksRemaining !== 'number' || isNaN(decksRemaining) || decksRemaining <= 0) {
+      console.warn('Invalid decks remaining:', decksRemaining);
+      return runningCount; // Return running count as fallback
+    }
+    
+    const trueCount = runningCount / decksRemaining;
+    return Math.round(trueCount * 10) / 10; // Round to 1 decimal place
   }
   
+  /**
+   * Determines the CSS class name based on the count value for styling purposes.
+   * 
+   * @param {number} count - The count value (positive, negative, or zero)
+   * @returns {'positive'|'negative'|'neutral'} The corresponding CSS class name
+   * 
+   * @example
+   * // Returns 'positive'
+   * getCountClass(5);
+   * 
+   * // Returns 'negative'
+   * getCountClass(-3);
+   * 
+   * // Returns 'neutral'
+   * getCountClass(0);
+   */
   function getCountClass(count) {
-    if (count >= 3) return 'count-high';
-    if (count <= -3) return 'count-low';
-    if (count > 0) return 'count-positive';
-    if (count < 0) return 'count-negative';
-    return 'count-neutral';
+    if (typeof count !== 'number' || isNaN(count)) {
+      console.warn('Invalid count value:', count);
+      return 'neutral';
+    }
+    
+    const EPSILON = 0.001; // To handle floating point imprecision
+    if (count > EPSILON) return 'positive';
+    if (count < -EPSILON) return 'negative';
+    return 'neutral';
   }
   
   function generateRecommendation(value, dealerVal, trueCount) {
@@ -382,7 +509,7 @@
     const remainingDecks = (remainingCards / 52).toFixed(2);
     
     el('cardsRemainingDisplay').innerHTML = 
-      `${gameState.language === 'en' ? 'Cards remaining: ' : 'Karten übrig: '} 
+      `${gameState.language === 'en' ? 'Cards remaining: ' : 'Cards remaining: '} 
       ${remainingCards} (${remainingDecks} ${gameState.language === 'en' ? 'decks' : 'Decks'})`;
   }
 
@@ -686,7 +813,7 @@
     
     if (!playerCards.length || !dealerCard) {
       el('decisionDisplay').innerHTML = gameState.language === 'de' ? 
-        'Bitte gültige Karten eingeben' : 'Please enter valid cards';
+        'Please enter valid cards' : 'Please enter valid cards';
       return;
     }
 
@@ -711,7 +838,7 @@
     
     if (!gameState.history.length) {
       historyDisplay.innerHTML = '<em>' + 
-        (gameState.language === 'en' ? 'No cards played yet' : 'Noch keine Karten gespielt') + 
+        (gameState.language === 'en' ? 'No cards played yet' : 'No cards played yet') + 
         '</em>';
       return;
     }
@@ -730,7 +857,7 @@
 
     historyDisplay.innerHTML = `
       <div class="history-container">
-        <h3>${gameState.language === 'en' ? 'Card History' : 'Kartenverlauf'}</h3>
+        <h3>${gameState.language === 'en' ? 'Card History' : 'Card History'}</h3>
         ${historyHTML}
       </div>
     `;
@@ -739,12 +866,8 @@
   function translateAction(action) {
     if (gameState.language === 'en') return action;
     
-    const translations = {
-      'Hit': 'Ziehen',
-      'Stand': 'Stehen',
-      'Double': 'Verdoppeln',
-      'Split': 'Splitten'
-    };
+    // No translation needed as we're standardizing to English
+    return action;
     return translations[action] || action;
   }
 
@@ -753,11 +876,11 @@
     const rec = el('recommendation');
     
     if (trueCount <= -3) {
-      rec.innerHTML = '🔴 Minimaler Einsatz! Ungünstige Karten.';
+      rec.innerHTML = '🔴 Minimum bet! Unfavorable cards.';
       rec.className = 'count-low';
     }
     else if (trueCount <= -1) {
-      rec.innerHTML = '🟡 Vorsichtig spielen, kleine Einsätze.';
+      rec.innerHTML = '🟡 Play carefully, small bets.';
       rec.className = 'count-negative';
     }
     else if (trueCount <= 1) {
@@ -765,7 +888,7 @@
       rec.className = 'count-neutral';
     }
     else if (trueCount <= 3) {
-      rec.innerHTML = '🟢 Einsatz erhöhen! Gute Bedingungen.';
+      rec.innerHTML = '🟢 Increase bet! Good conditions.';
       rec.className = 'count-positive';
     }
     else {

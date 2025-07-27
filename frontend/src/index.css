@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+@layer base {
+  body {
+    @apply bg-primary-bg text-text-primary font-sans antialiased;
+  }
+}
+
+/* Custom animations */
+@keyframes ping-slow {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.1;
+  }
+}
+
+.animate-ping-slow {
+  animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Card styles */
+.playing-card {
+  @apply w-16 h-24 md:w-20 md:h-28 bg-white rounded-lg shadow-md flex items-center justify-center cursor-pointer transition-transform hover:transform hover:-translate-y-1;
+  aspect-ratio: 2.5/3.5;
+}
+
+.card-back {
+  @apply w-full h-full rounded-lg bg-gradient-to-br from-blue-600 to-blue-800;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-front {
+  @apply w-full h-full rounded-lg bg-white p-2 flex flex-col justify-between;
+  color: #1a1a1a;
+}
+
+.rank {
+  @apply font-bold text-xl;
+}
+
+.suit {
+  @apply text-2xl self-end;
+}
+
+/* Action Buttons */
+.action-button {
+  @apply flex-1 md:flex-none items-center justify-center px-4 py-2 rounded-md text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-secondary-bg focus:ring-accent;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-secondary-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

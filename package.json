@@ -1,0 +1,24 @@
+{
+  "name": "blackjack-card-counter",
+  "version": "1.0.0",
+  "description": "Blackjack Card Counter Application",
+  "main": "src/static/js/script.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "^@/(.*)\\.js$": "<rootDir>/src/static/js/$1.js"
+    },
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
+  }
+}

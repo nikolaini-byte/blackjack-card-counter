@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blackjack-counter
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - blackjack-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: blackjack-redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - blackjack-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Optional: Add a monitoring service with Prometheus and Grafana
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #   depends_on:
+  #     - app
+  #   networks:
+  #     - blackjack-network
+
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   depends_on:
+  #     - prometheus
+  #   networks:
+  #     - blackjack-network
+
+volumes:
+  redis_data:
+  # grafana_data:
+
+networks:
+  blackjack-network:
+    driver: bridge

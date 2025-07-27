@@ -1,0 +1,52 @@
+{
+  "name": "blackjack-pro-frontend",
+  "version": "0.2.0",
+  "private": true,
+  "dependencies": {
+    "@heroicons/react": "^2.0.18",
+    "@reduxjs/toolkit": "^2.8.2",
+    "framer-motion": "^10.16.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^6.15.0",
+    "react-scripts": "5.0.1",
+    "redux-persist": "^6.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/typography": "^0.5.9",
+    "@testing-library/jest-dom": "^6.6.4",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "autoprefixer": "^10.4.15",
+    "jest": "^27.5.1",
+    "jest-environment-jsdom": "^30.0.5",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3"
+  }
+}

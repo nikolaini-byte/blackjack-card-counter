@@ -32,8 +32,8 @@ def start_server():
         ], cwd=os.getcwd())
         
         print("\nServer started!")
-        print("Open http://{SERVER_HOST}:{API_PORT} in your browser")
-        print("API Documentation: http://{SERVER_HOST}:{API_PORT}/docs")
+        print(f"Open http://{SERVER_HOST}:{API_PORT} in your browser")
+        print(f"API Documentation: http://{SERVER_HOST}:{API_PORT}/docs")
         print("\nPress Ctrl+C to exit\n")
         
         # Warten auf Benutzerinteraktion

@@ -1,0 +1,146 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      # Start Redis for testing
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+        python-version: ['3.10']
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    # Set up Node.js
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    # Set up Python
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    # Install frontend dependencies
+    - name: Install frontend dependencies
+      working-directory: ./frontend
+      run: npm ci
+    
+    # Install Python dependencies
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+    
+    # Run frontend tests
+    - name: Run frontend tests
+      working-directory: ./frontend
+      run: |
+        npm test -- --coverage --watchAll=false
+        npm run build
+    
+    # Run backend tests
+    - name: Run backend tests
+      run: |
+        python -m pytest tests/ -v --cov=src --cov-report=xml
+    
+    # Upload coverage to Codecov
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+        verbose: true
+
+  deploy:
+    name: Deploy
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    # Set up Node.js
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+    
+    # Install frontend dependencies
+    - name: Install frontend dependencies
+      working-directory: ./frontend
+      run: npm ci
+    
+    # Build frontend
+    - name: Build frontend
+      working-directory: ./frontend
+      run: npm run build
+      env:
+        NODE_ENV: production
+        REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+    
+    # Deploy to Vercel
+    - name: Install Vercel CLI
+      run: npm install --global vercel@latest
+    
+    - name: Deploy to Vercel
+      working-directory: ./frontend
+      run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    
+    # Create GitHub release
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          ## What's Changed
+          
+          ### New Features
+          - Added comprehensive test suite
+          - Implemented CI/CD pipeline
+          - Added documentation
+          
+          ### Bug Fixes
+          - Various bug fixes and improvements
+          
+          ### Dependencies
+          - Updated all dependencies to latest versions
+        draft: false
+        prerelease: false

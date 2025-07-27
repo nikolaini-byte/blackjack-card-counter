@@ -1,11 +1,179 @@
-# Blackjack Card Counter & Decision Engine
+# 🃏 Blackjack Card Counter (Early Development)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Windows](https://img.shields.io/badge/Windows-Supported-brightgreen)](https://www.microsoft.com/windows/)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/nikolaini-byte/blackjack-card-counter/build.yml?branch=main)](https://github.com/nikolaini-byte/blackjack-card-counter/actions)
+[![Status: Experimental](https://img.shields.io/badge/Status-Experimental-important)](https://github.com/nikolaini-byte/blackjack-card-counter)
+[![React](https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react)](https://reactjs.org/)
+[![Python](https://img.shields.io/badge/Python-3.10-3776AB?logo=python)](https://www.python.org/)
 
-An advanced, mathematically-driven Blackjack analysis tool featuring sophisticated card counting systems, Expected Value calculations, and optimal strategy recommendations. This application provides both a desktop interface and a web-based API for blackjack strategy analysis.
+> **⚠️ Important Notice: Project in Early Development**  
+> This project is currently in a very early development stage. The code is experimental, and many features are either missing or not yet functional. We're building this in the open and welcome contributors who are interested in helping shape the project.
+
+## 🎯 Project Goal
+
+A professional-grade Blackjack card counting trainer and simulator designed to help users practice and master various card counting systems including Hi-Lo, KO, and Omega II. When complete, it will provide real-time counting, strategy recommendations, and training tools.
+
+## 🚧 Current Status
+
+- **Development Phase**: Early Alpha
+- **Version**: 0.1.0 (Pre-release)
+- **Stability**: Experimental - Not yet suitable for production use
+- **Documentation**: Incomplete - Being actively developed
+
+## 🛠️ Planned Features
+
+### 🎯 Card Counting Systems (Planned)
+- [ ] **Hi-Lo** - Balanced counting system (In Development)
+- [ ] **KO (Knock-Out)** - Unbalanced system (Planned)
+- [ ] **Omega II** - Advanced balanced system (Future)
+
+### 📊 Analysis (Planned)
+- [ ] Running count and true count calculations
+- [ ] Basic betting recommendations
+- [ ] Deck penetration tracking
+- [ ] Hand probability analysis
+
+### 🎮 Interactive Features (Planned)
+- [ ] Card input via UI
+- [ ] Multiple deck support
+- [ ] Basic game state management
+
+### 🎲 Monte Carlo Simulation
+- Simulate thousands of hands
+- Test different strategies
+- View detailed statistics
+- Optimize betting patterns
+
+### Developer Friendly
+- Comprehensive test coverage
+- Well-documented codebase
+- CI/CD pipeline
+- Docker support
+
+## 📚 Documentation
+
+- [FAQ](FAQ.md) - Answers to common questions
+- [Contributing Guide](CONTRIBUTING.md) - How to contribute to the project
+- [Release Management](RELEASES.md) - Versioning and release process
+- [Project Status & Roadmap](PROJECT.md) - Current progress and future plans
+- [Changelog](CHANGELOG.md) - Version history
+
+## 🚀 Getting Started (For Developers)
+
+> **Note**: This project is not yet ready for end-users. The following instructions are for developers who want to contribute to the project.
+
+### Prerequisites
+
+- Node.js 16+ and npm 7+
+- Python 3.10+
+- Git
+
+### Development Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/nikolaini-byte/blackjack-card-counter.git
+   cd blackjack-card-counter
+   ```
+
+2. Set up the development environment:
+   ```bash
+   # Install Python dependencies
+   pip install -r requirements.txt
+   
+   # Install Node.js dependencies
+   npm install
+   ```
+
+3. Start the development servers:
+   ```bash
+   # Start backend (in one terminal)
+   python start.py
+   
+   # Start frontend (in another terminal)
+   cd frontend
+   npm start
+   ```
+
+## 🤝 Contributing
+
+We welcome contributions! Since this project is in early development, your input is especially valuable. Please read our [Contributing Guide](CONTRIBUTING.md) for detailed information on how to contribute.
+
+### Quick Start for Contributors
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Project Structure
+
+```
+blackjack-card-counter/
+├── frontend/           # React frontend application
+├── backend/            # Python backend API
+├── docs/               # Documentation files
+├── tests/              # Test files
+├── .github/            # GitHub configurations
+├── CONTRIBUTING.md     # Contribution guidelines
+├── FAQ.md              # Frequently asked questions
+├── PROJECT.md          # Project status and roadmap
+├── RELEASES.md         # Release management
+└── README.md           # This file
+```
+
+## 📖 Documentation Status
+
+Our documentation is a work in progress. Here's what's available:
+
+- **Getting Started**: Basic setup instructions (this file)
+- **Contributing**: [CONTRIBUTING.md](CONTRIBUTING.md)
+- **FAQs**: [FAQ.md](FAQ.md)
+- **Project Status**: [PROJECT.md](PROJECT.md)
+- **Releases**: [RELEASES.md](RELEASES.md)
+- **Changelog**: [CHANGELOG.md](CHANGELOG.md)
+
+We're actively working on improving our documentation. If you find any gaps, please help us by contributing!
+
+## Known Limitations
+
+- The application is not yet functional for actual card counting practice
+- Many features are stubbed or in early development
+- UI/UX is subject to significant changes
+- Documentation is incomplete
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Blackjack Apprenticeship](https://www.blackjackapprenticeship.com/) for strategy resources
+- [Wizard of Odds](https://wizardofodds.com/games/blackjack/) for probability data
+- [React](https://reactjs.org/) and [Flask](https://flask.palletsprojects.com/) communities for amazing tools
+
+---
+
+A modern, distraction-free Blackjack card counting trainer designed to help you practice and master card counting techniques. This web-based application provides a clean, intuitive interface for practicing card counting with multiple counting systems.
+
+## 🌟 Features
+
+### 🎯 Multiple Counting Systems
+- **Hi-Lo** - The most popular balanced counting system, great for beginners
+- **KO (Knock-Out)** - An unbalanced system that's easier to learn
+- **Omega II** - An advanced balanced system with higher playing efficiency
+
+### 📊 Real-time Counting
+- Running count and true count calculations
+- Visual feedback for card values
+- Adjustable number of decks (1-10)
+- Automatic deck penetration tracking
+
+### 🎨 Clean, Modern UI
+- Discord-inspired dark theme
+- Fully responsive design
+- Intuitive controls
+- No distracting elements or unnecessary features
 
 ## 🚀 Features
 
@@ -15,6 +183,12 @@ An advanced, mathematically-driven Blackjack analysis tool featuring sophisticat
 - **Dynamic Strategy** - Adapts to hand value, dealer upcard, and true count
 - **Confidence Scoring** - Provides confidence levels for each recommendation
 - **Detailed Reasoning** - Explains the mathematical logic behind each decision
+
+### 🛡️ Robust Error Handling
+- **Input Validation** - Comprehensive validation of all API inputs
+- **Meaningful Errors** - Clear, actionable error messages
+- **Standardized Responses** - Consistent error response format
+- **Security-Focused** - Prevents information leakage in error responses
 
 ### 🃏 Advanced Card Counting
 - **Multiple Systems** - Hi-Lo, KO, Omega II, Wong Halves, Zen Count
@@ -37,7 +211,7 @@ An advanced, mathematically-driven Blackjack analysis tool featuring sophisticat
 ## 🌐 Live Demo
 
 Try out the live demo of Blackjack Card Counter:
-[![Live Demo](https://img.shields.io/badge/🚀-Live%20Demo-blue?style=for-the-badge&logo=vercel)](https://web-production-abca.up.railway.app)
+[![Live Demo](https://img.shields.io/badge/🚀-Live%20Demo-blue?style=for-the-badge&logo=vercel)](cardcounter.up.railway.app)
 
 > ⏳ This demo will be available for approximately 30 days (until **August 25, 2025**)
 
@@ -93,6 +267,61 @@ Try out the live demo of Blackjack Card Counter:
   python start.py
   ```
   Access the web interface at [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+## 📖 User's Guide
+
+### Getting Started
+
+1. **Launch the Application**
+   - Double-click the desktop shortcut or run `BlackjackCardCounter.exe`
+   - The application will open in your default web browser
+
+2. **Initial Setup**
+   - Select the number of decks (typically 6-8 for casino play)
+   - Choose your preferred card counting system (Hi-Lo recommended for beginners)
+   - Set your bankroll and betting preferences
+
+### Using the Application
+
+#### Basic Usage
+- **Entering Cards**: Click the card buttons to add them to the current hand
+- **Dealer's Card**: Click the dealer button to set the dealer's upcard
+- **Get Recommendation**: The optimal play will be displayed automatically
+- **Undo**: Click the undo button to correct any mistakes
+
+#### Understanding the Display
+- **Count Display**: Shows the current running count and true count
+- **Recommendation**: The optimal play (Hit, Stand, Double, etc.)
+- **Confidence**: Indicates how strongly the recommendation is suggested
+- **Statistics**: Shows win probability and expected value
+
+#### Card Counting Systems
+
+| System | Ease | Best For | Key Values |
+|--------|------|----------|------------|
+| **Hi-Lo** | Easy | Beginners | 2-6: +1, 7-9: 0, 10-A: -1 |
+| **KO** | Easy | Beginners | 2-7: +1, 8-9: 0, 10-A: -1 |
+| **Omega II** | Advanced | Experienced Players | Complex multi-level |
+| **Wong Halves** | Expert | Professional Players | Fractional values |
+
+### Advanced Features
+
+#### Bankroll Management
+- **Optimal Betting**: Calculates the best bet size based on your bankroll and the true count
+- **Risk Analysis**: Shows your risk of ruin and expected value
+- **Session Tracking**: Tracks your wins, losses, and overall performance
+
+#### Strategy Analysis
+- **Hand Analysis**: Detailed breakdown of each possible play
+- **Probability Calculator**: See the odds of winning any hand
+- **Practice Mode**: Test your skills without risking real money
+
+### Tips for Success
+1. Start with the Hi-Lo counting system
+2. Practice regularly to improve your speed and accuracy
+3. Use the practice mode to test different scenarios
+4. Always manage your bankroll responsibly
+5. Remember that card counting is not illegal, but casinos may ask you to leave if caught
 
 ## 🚀 Quick Start
 
@@ -462,6 +691,18 @@ We welcome contributions! Here's how to get started:
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📜 Changelog
+
+See the [CHANGELOG.md](CHANGELOG.md) file for a detailed history of changes, updates, and releases.
+
+### Latest Changes (v0.2.0)
+- **Improved Validation**: Stricter input validation for all API endpoints
+- **Better Error Handling**: Standardized error responses and status codes
+- **Code Quality**: Refactored validation logic and improved code organization
+- **Dependency Updates**: Upgraded to latest stable versions
+
+For a complete list of changes, see the [full changelog](CHANGELOG.md).
 
 ## 🙏 Acknowledgments
 

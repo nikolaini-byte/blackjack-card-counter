@@ -7,12 +7,13 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 from fastapi import Request
 
+
 def get_request_context(request: Optional[Request] = None) -> Dict[str, Any]:
     """Extract relevant context from the request for error logging.
-    
+
     Args:
         request: The FastAPI request object
-        
+
     Returns:
         Dict containing request context information
     """
@@ -21,10 +22,10 @@ def get_request_context(request: Optional[Request] = None) -> Dict[str, Any]:
             "request_id": str(uuid.uuid4()),
             "timestamp": datetime.utcnow().isoformat(),
         }
-        
+
     # Get or generate request ID
     request_id = request.headers.get("X-Request-ID") or str(uuid.uuid4())
-    
+
     # Extract relevant request information
     return {
         "request_id": request_id,

@@ -25,12 +25,14 @@ def test_client():
     with TestClient(test_app) as client:
         yield client
 
+
 # Use the test client fixture in all tests
 @pytest.fixture(autouse=True)
 def setup_test_client(test_client, monkeypatch):
     # Make the test client available to all tests
     global client
     client = test_client
+
 
 def test_root_endpoint():
     """Test the root endpoint returns HTML."""
@@ -40,12 +42,14 @@ def test_root_endpoint():
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
+
 def test_health_check():
     """Test the health check endpoint."""
     with TestClient(create_app()) as client:
         response = client.get("/health")
         assert response.status_code == 200
         assert response.json() == {"status": "healthy"}
+
 
 def test_analyze_cards():
     """Test the card analysis endpoint."""
@@ -55,22 +59,23 @@ def test_analyze_cards():
         "true_count": 1.5,
         "decks": 6.0,
         "counting_system": "hiLo",
-        "penetration": 0.5
+        "penetration": 0.5,
     }
-    
+
     response = client.post("/api/cards/analyze", json=test_data)
     assert response.status_code == 200
     data = response.json()
-    
+
     # Check response structure
     assert "counting_analysis" in data
     assert "statistics" in data
     assert "recommendations" in data
-    
+
     # Check some specific values
     assert data["counting_analysis"]["true_count"] == 1.5
     assert data["statistics"]["player_hand_value"] == 21
     assert data["recommendations"]["action"] in ["HIT", "STAND"]
+
 
 def test_get_strategy():
     """Test the strategy recommendation endpoint."""
@@ -79,17 +84,18 @@ def test_get_strategy():
         "dealer_card": "9",
         "true_count": 0.0,
         "decks": 6.0,
-        "counting_system": "hiLo"
+        "counting_system": "hiLo",
     }
-    
+
     response = client.post("/api/strategy/recommend", json=test_data)
     assert response.status_code == 200
     data = response.json()
-    
+
     assert "action" in data
     assert "confidence" in data
     assert "alternatives" in data
     assert isinstance(data["alternatives"], list)
+
 
 def test_calculate_bankroll():
     """Test the bankroll calculation endpoint."""
@@ -98,37 +104,31 @@ def test_calculate_bankroll():
         "true_count": 2.0,
         "risk_tolerance": 0.02,
         "min_bet": 10.0,
-        "max_bet": 500.0
+        "max_bet": 500.0,
     }
-    
+
     response = client.post("/api/bankroll/calculate", json=test_data)
     assert response.status_code == 200
     data = response.json()
-    
+
     assert "recommended_bet" in data
     assert "risk_of_ruin" in data
     assert "expected_value" in data
     assert "kelly_bet" in data
     assert "half_kelly_bet" in data
 
+
 def test_validation_errors():
     """Test that validation errors are handled properly."""
     # Test with invalid card value
-    invalid_data = {
-        "cards": ["X"],  # Invalid card
-        "dealer_card": "6",
-        "decks": 6.0
-    }
-    
+    invalid_data = {"cards": ["X"], "dealer_card": "6", "decks": 6.0}  # Invalid card
+
     response = client.post("/api/cards/analyze", json=invalid_data)
     assert response.status_code == 422
-    
+
     # Test with missing required field
-    missing_data = {
-        "dealer_card": "6",
-        "decks": 6.0
-    }
-    
+    missing_data = {"dealer_card": "6", "decks": 6.0}
+
     response = client.post("/api/cards/analyze", json=missing_data)
     assert response.status_code == 422
 

@@ -18,7 +18,7 @@ from .exceptions import (
     BlackjackError,
     InvalidCardError,
     InvalidDeckCountError,
-    InvalidCountingSystemError
+    InvalidCountingSystemError,
 )
 
 # Import request utilities
@@ -36,31 +36,32 @@ from ..utils.validation import VALID_CARDS, VALID_COUNTING_SYSTEMS
 # Configure logger at module level
 logger = logging.getLogger(__name__)
 
+
 async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
     """Handle HTTP exceptions with detailed logging.
-    
+
     This handler processes standard HTTP exceptions and returns a consistent
     error response format with detailed logging for debugging.
-    
+
     Args:
         request: The incoming request object
         exc: The HTTP exception that was raised
-        
+
     Returns:
         JSONResponse: Formatted error response with appropriate status code and details
     """
     # Get request context for logging
     context = get_request_context(request)
     request_id = context["request_id"]
-    
+
     # Prepare error details
     error_details = {
         "status_code": exc.status_code,
         "detail": str(exc.detail),
-        "headers": dict(exc.headers) if hasattr(exc, 'headers') else None,
+        "headers": dict(exc.headers) if hasattr(exc, "headers") else None,
         "request_id": request_id,
     }
-    
+
     # Log the error with structured context
     logger.error(
         "HTTP Exception: %s - %s",
@@ -77,7 +78,7 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
             },
         },
     )
-    
+
     # Return a clean, consistent error response
     return JSONResponse(
         status_code=exc.status_code,
@@ -92,18 +93,21 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
         },
         headers={
             "X-Request-ID": request_id,
-            **dict(exc.headers if hasattr(exc, 'headers') else {})
+            **dict(exc.headers if hasattr(exc, "headers") else {}),
         },
     )
 
-async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+
+async def validation_exception_handler(
+    request: Request, exc: RequestValidationError
+) -> JSONResponse:
     """
     Handle request validation errors with detailed logging.
-    
+
     Args:
         request: The incoming request object
         exc: The validation exception that was raised
-        
+
     Returns:
         JSONResponse: Formatted validation error response with status 422
     """
@@ -118,7 +122,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         if "ctx" in error:
             error_info["context"] = error["ctx"]
         errors.append(error_info)
-    
+
     # Log the validation error
     logger.warning(
         "Request Validation Error",
@@ -131,39 +135,42 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             "validation_errors": errors,
         },
     )
-    
+
     # Create a validation error response using our APIException structure
     error_response = APIException(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         error_code="validation_error",
         message=ErrorMessages.VALIDATION_ERROR,
-        details={"validation_errors": errors}
+        details={"validation_errors": errors},
     )
-    
+
     # Return the error response
     return JSONResponse(
         status_code=error_response.status_code,
         content=error_response.to_dict(),
     )
 
-async def unexpected_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+
+async def unexpected_exception_handler(
+    request: Request, exc: Exception
+) -> JSONResponse:
     """Handle unexpected exceptions with detailed logging.
-    
+
     This is a catch-all handler for any unhandled exceptions that occur during
     request processing. It logs the full exception details and returns a generic
     500 error to the client.
-    
+
     Args:
         request: The incoming request object
         exc: The unexpected exception that was raised
-        
+
     Returns:
         JSONResponse: Generic 500 error response without exposing internal details
     """
     # Get request context for logging
     context = get_request_context(request)
     request_id = context["request_id"]
-    
+
     # Prepare error details for logging
     error_details = {
         "type": exc.__class__.__name__,
@@ -171,7 +178,7 @@ async def unexpected_exception_handler(request: Request, exc: Exception) -> JSON
         "request_id": request_id,
         "traceback": traceback.format_exc(),
     }
-    
+
     # Log the full exception with structured context
     logger.exception(
         "Unhandled exception: %s",
@@ -187,7 +194,7 @@ async def unexpected_exception_handler(request: Request, exc: Exception) -> JSON
             },
         },
     )
-    
+
     # Return a generic 500 error to the client with request ID for correlation
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -203,19 +210,20 @@ async def unexpected_exception_handler(request: Request, exc: Exception) -> JSON
         headers={"X-Request-ID": request_id},
     )
 
+
 def register_error_handlers(app) -> None:
     """Register all error handlers with the FastAPI app.
-    
+
     This function registers the following error handlers:
     - HTTPException: For standard HTTP errors
     - RequestValidationError: For request validation errors
     - ValidationError: For Pydantic model validation errors
     - APIException: For custom application errors
     - Exception: Catch-all for any unhandled exceptions
-    
+
     It also adds middleware for request ID tracking and ensures consistent
     error responses across the application.
-    
+
     Args:
         app: The FastAPI application instance
     """
@@ -223,28 +231,28 @@ def register_error_handlers(app) -> None:
     app.add_exception_handler(HTTPException, http_exception_handler)
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
     app.add_exception_handler(ValidationError, validation_exception_handler)
-    
+
     # Register our custom exception handler for APIException and its subclasses
     app.add_exception_handler(APIException, http_exception_handler)
-    
+
     # Register a catch-all handler for any unhandled exceptions
     app.add_exception_handler(Exception, unexpected_exception_handler)
-    
+
     # Add middleware to ensure all responses include the request ID
     @app.middleware("http")
     async def add_request_id_middleware(request: Request, call_next):
         # Generate or get request ID
         request_id = request.headers.get("X-Request-ID") or str(uuid.uuid4())
-        
+
         # Add request ID to request state for logging
         request.state.request_id = request_id
-        
+
         # Process the request
         start_time = time.time()
         try:
             response = await call_next(request)
             process_time = (time.time() - start_time) * 1000
-            
+
             # Log successful request
             logger.info(
                 "Request processed",
@@ -260,11 +268,11 @@ def register_error_handlers(app) -> None:
                     }
                 },
             )
-            
+
             # Add request ID to response headers
             response.headers["X-Request-ID"] = request_id
             return response
-            
+
         except Exception as exc:
             # Log the error with request context
             logger.error(
@@ -285,7 +293,7 @@ def register_error_handlers(app) -> None:
                     },
                 },
             )
-            
+
             # Return a 500 error with request ID
             return JSONResponse(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -300,7 +308,7 @@ def register_error_handlers(app) -> None:
                 },
                 headers={"X-Request-ID": request_id},
             )
-    
+
     # Log that handlers have been registered
     logger.info("Registered error handlers for the application")
     return app

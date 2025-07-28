@@ -8,16 +8,17 @@ from fastapi.responses import HTMLResponse
 
 router = APIRouter()
 
+
 @router.get(
     "/",
     response_class=HTMLResponse,
     summary="Root endpoint",
-    description="Returns the main HTML page for the Blackjack Card Counter API"
+    description="Returns the main HTML page for the Blackjack Card Counter API",
 )
 async def root():
     """
     Root endpoint that returns the main HTML page.
-    
+
     Returns:
         HTMLResponse: The main HTML page
     """
@@ -96,20 +97,15 @@ async def root():
     </html>
     """
 
+
 @router.get(
-    "/health",
-    summary="Health check",
-    description="Check if the API is running"
+    "/health", summary="Health check", description="Check if the API is running"
 )
 async def health_check():
     """
     Health check endpoint.
-    
+
     Returns:
         dict: Status of the API
     """
-    return {
-        "status": "ok",
-        "version": "1.0.0",
-        "service": "blackjack-card-counter"
-    }
+    return {"status": "ok", "version": "1.0.0", "service": "blackjack-card-counter"}

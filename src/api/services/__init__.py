@@ -8,8 +8,8 @@ from .strategy_service import get_strategy_recommendation
 from .bankroll_service import manage_bankroll, calculate_bankroll_needed
 
 __all__ = [
-    'analyze_cards',
-    'get_strategy_recommendation',
-    'manage_bankroll',
-    'calculate_bankroll_needed'
+    "analyze_cards",
+    "get_strategy_recommendation",
+    "manage_bankroll",
+    "calculate_bankroll_needed",
 ]

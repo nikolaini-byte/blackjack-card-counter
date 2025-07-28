@@ -1,46 +1,59 @@
-import React, { useState, useEffect, useMemo } from 'react';
-
-// Beispiel: Zählsysteme (kannst du anpassen / erweitern)
-const COUNTING_SYSTEMS = {
-  hilo: {
-    id: 'hilo',
-    name: 'Hi-Lo',
-    description: 'Ausgeglichenes System mit True Count Umrechnung',
-    cardValues: {
-      '2': 1, '3': 1, '4': 1, '5': 1, '6': 1,
-      '7': 0, '8': 0, '9': 0,
-      '10': -1, 'J': -1, 'Q': -1, 'K': -1, 'A': -1,
-    },
-    balanced: true,
-  },
-  ko: {
-    id: 'ko',
-    name: 'KO',
-    description: 'Unausgeglichenes System, verwendet den laufenden Zähler direkt',
-    cardValues: {
-      '2': 1, '3': 1, '4': 1, '5': 1, '6': 1,
-      '7': 1, '8': 0, '9': 0,
-      '10': -1, 'J': -1, 'Q': -1, 'K': -1, 'A': -1,
-    },
-    balanced: false,
-  },
-  // Weitere Systeme ...
-};
-
-const CARD_RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { COUNTING_SYSTEMS, CARD_RANKS, BUTTON_LABELS, ARIA_LABELS } from '../utils/cardConstants';
+import { 
+  calculateRunningCount, 
+  calculateTrueCount, 
+  calculateHandValue, 
+  getCardColorClass,
+  generateCardId
+} from '../utils/cardUtils';
+import { saveGameState, loadGameState } from '../utils/storageUtils';
+import CardDisplay from './CardDisplay';
 
 const CardCounter = () => {
   // --- States ---
-  const [selectedSystem, setSelectedSystem] = useState('hilo');
-  const [cards, setCards] = useState([]); // alle Karten (inkl. Spieler/Dealer)
-  const [inputMode, setInputMode] = useState('player'); // 'player' oder 'dealer'
-  const [decksRemaining, setDecksRemaining] = useState(6); // Anzahl Decks im Spiel
-  const [showSystemInfo, setShowSystemInfo] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
-  const [error, setError] = useState(null);
-  const [isCalculating, setIsCalculating] = useState(false);
-  const [simulationResult, setSimulationResult] = useState(null);
-  const [betRec, setBetRec] = useState({ unit: '-', text: 'Keine Empfehlung' });
+  const [state, setState] = useState(() => {
+    const savedState = loadGameState();
+    return {
+      selectedSystem: savedState.selectedSystem || 'hilo',
+      cards: savedState.cards || [],
+      inputMode: 'player',
+      decksRemaining: savedState.decksRemaining || 6,
+      showSystemInfo: false,
+      showHelp: false,
+      error: null,
+      isCalculating: false,
+      simulationResult: null,
+      betRec: { unit: '-', text: 'Keine Empfehlung' }
+    };
+  });
+
+  // Destructure state for easier access
+  const {
+    selectedSystem,
+    cards,
+    inputMode,
+    decksRemaining,
+    showSystemInfo,
+    showHelp,
+    error,
+    isCalculating,
+    simulationResult,
+    betRec
+  } = state;
+
+  // Update state and save to localStorage
+  const setStateWithSave = useCallback((updates) => {
+    setState(prev => {
+      const newState = { ...prev, ...updates };
+      saveGameState({
+        selectedSystem: newState.selectedSystem,
+        cards: newState.cards,
+        decksRemaining: newState.decksRemaining
+      });
+      return newState;
+    });
+  }, []);
 
   // --- Hilfsvariablen ---
   const currentSystem = COUNTING_SYSTEMS[selectedSystem] || COUNTING_SYSTEMS['hilo'];
@@ -48,116 +61,110 @@ const CardCounter = () => {
   // --- IDs für Karten ---
   const nextId = React.useRef(1);
 
-  // --- Karten in Spieler und Dealer aufsplitten ---
-  const playerCards = useMemo(() => cards.filter(c => c.source === 'player'), [cards]);
-  const dealerCards = useMemo(() => cards.filter(c => c.source === 'dealer'), [cards]);
+  // --- Memoized Values ---
+  
+  // Split cards into player and dealer hands
+  const [playerCards, dealerCards] = useMemo(() => {
+    const player = [];
+    const dealer = [];
+    
+    cards.forEach(card => {
+      if (card.source === 'player') {
+        player.push(card);
+      } else {
+        dealer.push(card);
+      }
+    });
+    
+    return [player, dealer];
+  }, [cards]);
 
-  // --- Zählerfunktionen ---
-  const runningCount = useMemo(() => {
-    return cards.reduce((sum, card) => {
-      const val = currentSystem.cardValues[card.rank];
-      return sum + (val || 0);
-    }, 0);
-  }, [cards, currentSystem]);
+  // Calculate running count using utility function
+  const runningCount = useMemo(() => 
+    calculateRunningCount(cards, currentSystem),
+    [cards, currentSystem]
+  );
 
+  // Calculate remaining decks
+  const usedDecks = useMemo(() => cards.length / 52, [cards]);
+  const remainingDecks = Math.max(0, decksRemaining - usedDecks);
   const totalCards = decksRemaining * 52;
 
-  // Used decks (gerundet auf 1 Dezimalstelle)
-  const usedDecks = useMemo(() => {
-    return cards.length / 52;
-  }, [cards]);
+  // Calculate true count using utility function
+  const trueCount = useMemo(
+    () => calculateTrueCount(runningCount, remainingDecks, currentSystem.balabled),
+    [runningCount, remainingDecks, currentSystem.balanced]
+  );
 
-  const remainingDecks = useMemo(() => {
-    return decksRemaining - usedDecks;
-  }, [decksRemaining, usedDecks]);
+  // Calculate hand values using utility function
+  const { value: playerHandValue, isSoft: isPlayerHandSoft } = useMemo(
+    () => calculateHandValue(playerCards),
+    [playerCards]
+  );
 
-  // True Count berechnen nur, wenn System balanced ist
-  const trueCount = useMemo(() => {
-    if (!currentSystem.balanced) return runningCount;
-    if (remainingDecks <= 0) return runningCount; // Vermeidung Division durch 0
-    return runningCount / remainingDecks;
-  }, [runningCount, remainingDecks, currentSystem]);
+  const { value: dealerHandValue, isSoft: isDealerHandSoft } = useMemo(
+    () => calculateHandValue(dealerCards),
+    [dealerCards]
+  );
 
-  // Karten pro Rank zählen
-  const uniqueCardCounts = useMemo(() => {
-    const counts = {};
-    cards.forEach(card => {
-      counts[card.rank] = (counts[card.rank] || 0) + 1;
-    });
-    return counts;
-  }, [cards]);
+  // --- Card Management Functions ---
 
-  // Handwert (vereinfacht, nur Summierung - Blackjack Logik kann erweitert werden)
-  const playerHandValue = useMemo(() => {
-    // Zum Beispiel: Einfach Summe der Werte, Asse als 11 oder 1
-    // Hier beispielhaft: 10 für Buben, Damen, Könige, 11 für Asse
-    let sum = 0;
-    let aces = 0;
-    playerCards.forEach(card => {
-      if (['J', 'Q', 'K', '10'].includes(card.rank)) sum += 10;
-      else if (card.rank === 'A') aces++;
-      else sum += parseInt(card.rank, 10);
-    });
-    // Asse als 11 oder 1 rechnen
-    for (let i = 0; i < aces; i++) {
-      if (sum + 11 <= 21) sum += 11;
-      else sum += 1;
-    }
-    return sum;
-  }, [playerCards]);
-
-  const dealerHandValue = useMemo(() => {
-    let sum = 0;
-    let aces = 0;
-    dealerCards.forEach(card => {
-      if (['J', 'Q', 'K', '10'].includes(card.rank)) sum += 10;
-      else if (card.rank === 'A') aces++;
-      else sum += parseInt(card.rank, 10);
-    });
-    for (let i = 0; i < aces; i++) {
-      if (sum + 11 <= 21) sum += 11;
-      else sum += 1;
-    }
-    return sum;
-  }, [dealerCards]);
-
-  // --- Funktionen ---
-
-  // Karte hinzufügen
-  const addCardToHistory = (rank) => {
-    setError(null);
-    // max 10 Decks * 52 Karten = 520 Karten limit (Optional)
-    if (cards.length >= decksRemaining * 52) {
-      setError('Maximale Anzahl Karten erreicht.');
+  // Add a new card to the history
+  const addCardToHistory = useCallback((rank) => {
+    if (!CARD_RANKS.includes(rank)) {
+      setStateWithSave({ error: 'Ungültige Karte' });
       return;
     }
+
+    // Check max cards limit
+    if (cards.length >= totalCards) {
+      setStateWithSave({ error: 'Maximale Anzahl Karten erreicht' });
+      return;
+    }
+
     const newCard = {
-      id: nextId.current++,
+      id: generateCardId(),
       rank,
       visible: true,
       source: inputMode,
-      timestamp: Date.now(),
+      timestamp: new Date().toISOString(),
     };
-    setCards(prev => [...prev, newCard]);
-  };
 
-  // Karte entfernen
-  const removeCardFromHistory = (id) => {
-    setCards(prev => prev.filter(c => c.id !== id));
-  };
+    setStateWithSave({
+      cards: [...cards, newCard],
+      error: null,
+      simulationResult: null,
+      betRec: { unit: '-', text: 'Keine Empfehlung' }
+    });
+  }, [cards, inputMode, totalCards, setStateWithSave]);
 
-  // Alle Karten zurücksetzen
-  const clearAllCards = () => {
-    setCards([]);
-    setError(null);
-    setSimulationResult(null);
-    setBetRec({ unit: '-', text: 'Keine Empfehlung' });
-  };
+  // Remove a card from history
+  const removeCardFromHistory = useCallback((id) => {
+    setStateWithSave({
+      cards: cards.filter(card => card.id !== id),
+      simulationResult: null,
+      betRec: { unit: '-', text: 'Keine Empfehlung' }
+    });
+  }, [cards, setStateWithSave]);
 
-  // Karte sichtbar / unsichtbar toggle
-  const toggleCardVisibility = (id) => {
-    setCards(prev => prev.map(c => (c.id === id ? { ...c, visible: !c.visible } : c)));
-  };
+  // Clear all cards
+  const clearAllCards = useCallback(() => {
+    setStateWithSave({
+      cards: [],
+      error: null,
+      simulationResult: null,
+      betRec: { unit: '-', text: 'Keine Empfehlung' }
+    });
+  }, [setStateWithSave]);
+
+  // Toggle card visibility
+  const toggleCardVisibility = useCallback((id) => {
+    setStateWithSave({
+      cards: cards.map(card => 
+        card.id === id ? { ...card, visible: !card.visible } : card
+      )
+    });
+  }, [cards, setStateWithSave]);
 
   // Simulation / Empfehlung auslösen (Dummy-Implementierung)
   const handleSimulationClick = () => {
@@ -182,42 +189,37 @@ const CardCounter = () => {
     return 'bg-gray-700 hover:bg-gray-600 text-white';
   };
 
-  // Handling der Karteneingabe via Quick Buttons
-  const handleCardInput = (rank) => {
+  // --- Event Handlers ---
+
+  const handleCardInput = useCallback((rank) => {
     addCardToHistory(rank);
-  };
+  }, [addCardToHistory]);
 
-  // --- Render-Funktionen (aus deinem Code) ---
+  const handleToggleInputMode = useCallback(() => {
+    setStateWithSave({
+      inputMode: inputMode === 'player' ? 'dealer' : 'player'
+    });
+  }, [inputMode, setStateWithSave]);
 
-  const renderCard = (card, index) => {
-    if (!card.visible) return null;
+  // --- Render Functions ---
 
-    const cardValue = currentSystem.cardValues[card.rank] || 0;
-    const isPositive = cardValue > 0;
-    const isNegative = cardValue < 0;
-
+  const renderCard = useCallback((card) => {
+    const countValue = getCardCountValue(card.rank, currentSystem);
+    const isDealerUpcard = card.source === 'dealer' && dealerCards[0]?.id === card.id;
+    
     return (
-      <div
-        key={card.id}
-        className={`relative group inline-block w-8 h-12 md:w-10 md:h-14 mx-0.5 rounded-md flex items-center justify-center text-sm font-bold cursor-pointer transition-all hover:scale-110 ${
-          isPositive
-            ? 'bg-green-900/70 text-green-200 hover:bg-green-800/80'
-            : isNegative
-            ? 'bg-red-900/70 text-red-200 hover:bg-red-800/80'
-            : 'bg-white/10 text-white hover:bg-gray-600/50'
-        }`}
-        onClick={() => toggleCardVisibility(card.id)}
-        title={`${card.rank} (${cardValue >= 0 ? '+' : ''}${cardValue}) - Click to ${
-          card.visible ? 'hide' : 'show'
-        }`}
-      >
-        {card.rank}
-        <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-          ×
-        </div>
+      <div key={card.id} className="relative">
+        <CardDisplay
+          rank={card.rank}
+          source={card.source}
+          countValue={countValue}
+          onToggleVisibility={() => toggleCardVisibility(card.id)}
+          isVisible={card.visible}
+          isDealerUpcard={isDealerUpcard}
+        />
       </div>
     );
-  };
+  }, [currentSystem, dealerCards, toggleCardVisibility]);
 
   const renderSimulationResults = () => {
     if (!simulationResult) return null;

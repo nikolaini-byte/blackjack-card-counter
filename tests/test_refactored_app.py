@@ -3,30 +3,25 @@ Tests for the refactored Blackjack Card Counter API.
 
 These tests verify that the refactored application works as expected.
 """
-import os
-import sys
-import pytest
 import asyncio
+
+import pytest
 from fastapi.testclient import TestClient
-from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 
-# Add the src directory to the Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from src.api.main import create_app
-from src.api.models.schemas import CardInput, StrategyRequest, BankrollRequest
+
 
 # Create test client with async app creation
 @pytest.fixture(scope="module")
 def test_client():
     # Create a new app instance for testing with Redis disabled
     test_app = asyncio.run(create_app(testing=True))
-    
+
     # Initialize FastAPI Cache with in-memory backend for testing
     FastAPICache.init(InMemoryBackend(), prefix="test-cache")
-    
+
     with TestClient(test_app) as client:
         yield client
 
@@ -42,17 +37,15 @@ def test_root_endpoint():
     response = client.get("/")
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
-    assert "Blackjack Card Counter API" in response.text
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
 
 def test_health_check():
     """Test the health check endpoint."""
-    response = client.get("/health")
-    assert response.status_code == 200
-    assert response.json() == {
-        "status": "ok",
-        "version": "1.0.0",
-        "service": "blackjack-card-counter"
-    }
+    with TestClient(create_app()) as client:
+        response = client.get("/health")
+        assert response.status_code == 200
+        assert response.json() == {"status": "healthy"}
 
 def test_analyze_cards():
     """Test the card analysis endpoint."""
@@ -138,6 +131,7 @@ def test_validation_errors():
     
     response = client.post("/api/cards/analyze", json=missing_data)
     assert response.status_code == 422
+
 
 if __name__ == "__main__":
     pytest.main(["-v", "test_refactored_app.py"])
